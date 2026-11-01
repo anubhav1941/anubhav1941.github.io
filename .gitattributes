@@ -1,0 +1,2 @@
+# The page templates are HTML with Jinja tags; count them as HTML in GitHub's language bar.
+*.j2 linguist-language=HTML

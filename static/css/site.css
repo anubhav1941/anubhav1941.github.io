@@ -208,7 +208,7 @@ h2 { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.6rem); font-weight: 800; }
 .lead { max-width: 60ch; margin: 22px 0 28px; color: var(--muted); font-size: clamp(1.02rem, 0.98rem + 0.3vw, 1.15rem); }
 .hero-facts { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); }
 .hero-facts li { display: grid; gap: 2px; }
-.hero-facts strong { font-size: 1.05rem; font-weight: 700; }
+.hero-facts strong { font-size: 1.05rem; font-weight: 700; white-space: nowrap; }
 .hero-facts span { color: var(--muted); font-size: 0.86rem; }
 .open-to { display: flex; align-items: flex-start; gap: 8px; margin-top: 20px; color: var(--muted); font-size: 0.9rem; }
 .open-to .icon { margin-top: 0.3em; }
@@ -429,7 +429,7 @@ h2 { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.6rem); font-weight: 800; }
   .cta-row .btn:not(.btn-icon):not(.btn-primary) { flex: 1 1 auto; }
   .contact .cta-row .btn { flex: 1 1 100%; }
   .hero-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-  .hero-facts strong { font-size: 0.98rem; }
+  .hero-facts strong { font-size: 0.9rem; }
   .hero-facts span { font-size: 0.8rem; line-height: 1.35; }
   .hero-visual { max-width: 300px; padding-bottom: 190px; }
 }

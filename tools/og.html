@@ -1,0 +1,44 @@
+<!doctype html>
+<!-- Source of static/img/og.png (the link-preview image). Open at 1200x630 and screenshot to regenerate. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; }
+  body {
+    position: relative; overflow: hidden; box-sizing: border-box; padding: 72px 80px;
+    background: #0b0f15; color: #e8edf4; font-family: Inter, sans-serif;
+    display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: center;
+  }
+  body::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(#1a2330 1px, transparent 1px), linear-gradient(90deg, #1a2330 1px, transparent 1px);
+    background-size: 56px 56px; opacity: 0.6;
+    mask-image: radial-gradient(ellipse 70% 80% at 25% 40%, #000 10%, transparent 75%);
+  }
+  body::after {
+    content: ""; position: absolute; right: -200px; top: -260px; width: 760px; height: 760px;
+    background: radial-gradient(closest-side, rgb(245 165 36 / 0.22), transparent 70%);
+  }
+  .copy, .photo { position: relative; z-index: 1; }
+  .kicker { display: inline-flex; align-items: center; gap: 12px; padding: 8px 18px 8px 14px; border-radius: 999px; border: 1px solid #243041; background: #121923; font-size: 22px; font-weight: 500; }
+  .kicker i { width: 12px; height: 12px; border-radius: 50%; background: #34d399; }
+  h1 { margin: 30px 0 0; font-size: 76px; font-weight: 800; letter-spacing: -0.035em; line-height: 1; }
+  .role { margin-top: 18px; color: #f5a524; font-size: 34px; font-weight: 600; letter-spacing: -0.01em; }
+  .meta { margin-top: 28px; color: #9aa6b6; font: 500 22px/1.5 "JetBrains Mono", monospace; }
+  .photo img { width: 300px; height: 375px; object-fit: cover; border-radius: 28px; border: 1px solid #243041; box-shadow: 0 30px 70px rgb(0 0 0 / 0.55); }
+  .url { position: absolute; left: 80px; bottom: 44px; z-index: 1; color: #6b7a8f; font: 500 20px "JetBrains Mono", monospace; }
+</style>
+</head>
+<body>
+  <div class="copy">
+    <span class="kicker"><i></i>Platform Engineer · CRIS, Indian Railways</span>
+    <h1>Anubhav Arora</h1>
+    <p class="role">Cloud, DevOps &amp; Platform Engineer</p>
+    <p class="meta">Kubernetes · OpenShift · Terraform · AWS<br>M.Tech Cloud Computing · BITS Pilani</p>
+  </div>
+  <div class="photo"><img src="../static/img/anubhav-portrait.jpg" alt=""></div>
+  <p class="url">anubhav1941.github.io</p>
+</body>
+</html>

@@ -1,0 +1,241 @@
+# Everything the site says lives here. Edit this file, push, and the site rebuilds.
+# Keep it public-safe: no phone number, no internal hostnames, IPs or ticket IDs.
+
+site:
+  url: https://anubhav1941.github.io
+  title: Anubhav Arora · Cloud, DevOps & Platform Engineer
+  description: >-
+    Platform Engineer on Indian Railways' Passenger Reservation System at CRIS. 2.5 years in
+    production infrastructure: Kubernetes, OpenShift, Terraform on AWS, GitOps and observability.
+    M.Tech Cloud Computing, BITS Pilani.
+  repo: https://github.com/anubhav1941/anubhav1941.github.io
+
+person:
+  name: Anubhav Arora
+  short: anubhav
+  role: Cloud, DevOps & Platform Engineer
+  location: Delhi NCR, India
+  email: anubhav1941@gmail.com
+  linkedin: https://www.linkedin.com/in/anubhavarora-devops/
+  github: https://github.com/anubhav1941
+  photo_alt: Anubhav Arora, outdoors at sunset, wearing glasses and a striped scarf
+
+hero:
+  eyebrow: Platform Engineer · CRIS, Ministry of Railways
+  headline: I help run the platform behind India's train tickets.
+  lead: >-
+    Cloud, DevOps and Platform Engineer with 2.5 years in production infrastructure:
+    Kubernetes and OpenShift, Terraform on AWS, GitOps with ArgoCD, and observability with
+    Prometheus and Grafana. Pursuing an M.Tech in Cloud Computing at BITS Pilani.
+  open_to: Open to Cloud, DevOps, SRE and Platform roles in Delhi NCR and remote
+  terminal:
+    - cmd: whoami
+      out: ["anubhav · platform engineer @ CRIS"]
+    - cmd: kubectl get skills -n anubhav
+      table:
+        header: [NAME, STATUS]
+        rows:
+          - [kubernetes, Ready]
+          - [openshift, Ready]
+          - [terraform, Ready]
+          - [aws, Ready]
+          - [argocd, Ready]
+          - [prometheus, Ready]
+
+scale:
+  kicker: The system I work on
+  title: Passenger Reservation System, Indian Railways
+  intro: >-
+    At CRIS (Centre for Railway Information Systems, Ministry of Railways) I'm on the platform
+    team behind PRS, the system that reserved train tickets across India go through, whether
+    they're booked at a station counter, on IRCTC or in an app.
+  stats:
+    - value: "1M+"
+      label: transactions per second at Tatkal peaks
+      note: One million every second, about 6 crore a minute.
+    - value: "11,000+"
+      label: trains on the system
+      note: Every reserved seat and berth on them is sold through PRS.
+    - value: "2 DCs"
+      label: Active-Active disaster recovery
+      note: Both data centres serve live traffic; either can carry the load.
+    - value: "1.5 lakh+"
+      label: bookings a minute, the upgraded PRS's design target
+      note: Up from 32,000, with 40 lakh+ enquiries a minute.
+      source:
+        label: PIB, Aug 2026
+        url: https://static.pib.gov.in/WriteReadData/specificdocs/documents/2026/aug/doc202686945401.pdf
+  tatkal: >-
+    Tatkal is the daily window when last-minute tickets go on sale. Demand arrives in the
+    first seconds, so the whole stack has to absorb a spike that is many times normal load.
+  work_title: What I do there
+  work:
+    - title: GitOps delivery
+      text: ArgoCD deployments with Helm and Kustomize overlays for Java microservices on OpenShift.
+    - title: Observability
+      text: >-
+        Prometheus and Grafana dashboards with alert thresholds for JVM heap and native memory,
+        replication lag and cluster health.
+    - title: Percona XtraDB Cluster
+      text: >-
+        Galera cluster on OpenShift via the Percona Operator: replication and GTID consistency,
+        ProxySQL routing and hostgroups, and DC-to-DR failover checks against runbooks.
+    - title: Aerospike Enterprise
+      text: >-
+        Bare-metal RHEL 9 clusters: health and partition monitoring with asadm, XDR replication
+        checks, and backup and restore to S3-compatible storage.
+    - title: Hazelcast Enterprise
+      text: >-
+        In-memory data grid across DC and DR: IMap utilisation, WAN replication queues,
+        near-cache behaviour and CP Subsystem locks.
+
+experience:
+  - role: Platform Engineer
+    org: VVDN Technologies
+    client: deployed at CRIS, Ministry of Railways
+    place: Delhi
+    dates: May 2026 – Present
+    summary: >-
+      Production platform for the Passenger Reservation System: OpenShift, GitOps, distributed
+      databases and in-memory data grids across an Active-Active DR setup.
+    points: []
+    see_also: "#prs"
+    stack: [OpenShift, ArgoCD, Helm, Kustomize, Percona XtraDB, Aerospike, Hazelcast, Prometheus, Grafana]
+  - role: DevOps & Infrastructure Engineer
+    org: HCLTech
+    client: UCSF healthcare project
+    place: Noida
+    dates: Dec 2023 – Dec 2025
+    summary: Infrastructure and delivery for a healthcare platform in a regulated environment.
+    points:
+      - >-
+        Modular Terraform for AWS (VPC, EC2, S3, IAM, security groups) with S3 remote state and
+        DynamoDB locking, giving reproducible dev, staging and production environments.
+      - Jenkins pipelines for build, test and deploy, with environment-specific promotion between stages.
+      - >-
+        Kubernetes deployments across dev, staging and prod: pod failure triage, resource limits,
+        liveness and readiness probes, rolling updates.
+      - Administered 50+ RHEL and Ubuntu servers; automated routine operations with Bash.
+      - Prometheus and Grafana alert rules and dashboards for faster detection and incident response.
+    stack: [AWS, Terraform, Jenkins, Kubernetes, RHEL, Bash, Prometheus, Grafana]
+
+projects:
+  - id: railbook
+    name: RailBook
+    tagline: Train ticket booking as microservices, on Kubernetes
+    context: M.Tech coursework, BITS Pilani (Scalable Services)
+    problem: >-
+      Two people press Book on the last seat at the same moment. Exactly one of them should get it,
+      even with several replicas of each service and a network that drops calls.
+    built:
+      - >-
+        Two FastAPI services, inventory and booking, each owning its own PostgreSQL deployed as a
+        StatefulSet.
+      - >-
+        A booking saga: hold seats, take payment, confirm; on any failure, compensate by releasing
+        the seats.
+      - >-
+        No overbooking: seat holds lock the schedule row (SELECT … FOR UPDATE), so concurrent
+        requests on any replica can't sell the same seat twice.
+      - >-
+        Resilient calls: 3-second timeouts and 3 retries with exponential backoff, made safe by
+        using the PNR as an idempotency key.
+      - >-
+        Probes, resource limits, ConfigMaps and Secrets; an HPA scales inventory from 2 to 5 pods
+        under load.
+      - GitHub Actions tests each service and pushes its image to Docker Hub.
+    stack: [Kubernetes, FastAPI, PostgreSQL, Docker, GitHub Actions, HPA]
+    diagram: railbook
+    links:
+      - {label: railbook-deploy, url: "https://github.com/anubhav1941/railbook-deploy"}
+      - {label: inventory-service, url: "https://github.com/anubhav1941/inventory-service"}
+      - {label: booking-service, url: "https://github.com/anubhav1941/booking-service"}
+
+  - id: terraform
+    name: AWS infrastructure with Terraform
+    tagline: One codebase, dev and prod, with locked remote state
+    context: Personal project
+    problem: >-
+      Hand-built cloud environments drift apart, and two people running terraform apply at once
+      can corrupt shared state.
+    built:
+      - Reusable network and compute modules; dev and prod are thin wrappers with their own CIDRs and sizes.
+      - >-
+        Remote state in S3 (versioned, encrypted, TLS-only) with DynamoDB locking, both created by
+        a small bootstrap stack.
+      - >-
+        Hardened EC2: latest Amazon Linux 2023, IMDSv2 required, encrypted gp3, shell through SSM
+        Session Manager instead of an open port 22.
+      - >-
+        CI on every push: fmt, validate, tflint, and terraform test suites that mock the AWS
+        provider, so security rules are checked without an AWS account.
+      - Root-caused orphaned route tables left by a partial destroy, and documented the fix.
+    stack: [Terraform, AWS VPC, EC2, S3, DynamoDB, IAM, GitHub Actions]
+    diagram: terraform
+    links:
+      - {label: terraform-aws-infra, url: "https://github.com/anubhav1941/terraform-aws-infra"}
+
+  - id: easyshop
+    name: GitOps on AWS EKS
+    tagline: From git push to a live HTTPS app, with no kubectl apply
+    context: >-
+      Guided build of TrainWithShubham's open-source EasyShop app; I deployed and debugged it end
+      to end
+    problem: >-
+      Ship a three-tier app so that a commit is the only manual step: build, publish, deploy and
+      TLS all follow from git.
+    built:
+      - Terraform for the VPC, EKS cluster, worker nodes and a bastion host.
+      - >-
+        Jenkins pipeline on a GitHub webhook: build the image, push to Docker Hub, then bump the
+        image tag in the manifests through a shared library.
+      - ArgoCD watches the manifests and auto-syncs 13 resources into the cluster.
+      - >-
+        NGINX Ingress with cert-manager issuing Let's Encrypt certificates; MongoDB as a
+        StatefulSet; an HPA from 2 to 5 replicas at 70% CPU; a migration Job.
+      - >-
+        Debugged Docker socket permissions on the Jenkins host and a TLS certificate stuck on the
+        ACME HTTP-01 challenge (DNS propagation).
+    stack: [AWS EKS, Terraform, Jenkins, ArgoCD, NGINX Ingress, cert-manager, MongoDB]
+    diagram: easyshop
+    links:
+      - {label: devops-3tier-ecommerce-pipeline, url: "https://github.com/anubhav1941/devops-3tier-ecommerce-pipeline"}
+
+skills:
+  - group: Cloud & IaC
+    items: ["AWS (EC2, VPC, S3, IAM, CloudWatch)", Terraform, Helm, Kustomize]
+  - group: Containers & delivery
+    items: [Kubernetes, OpenShift 4.x, Docker, ArgoCD, Jenkins, GitHub Actions, Git]
+  - group: Distributed data
+    items: [Aerospike Enterprise, Hazelcast Enterprise, "Percona XtraDB (Galera)", ProxySQL, Kafka, PostgreSQL]
+  - group: Observability
+    items: [Prometheus, Grafana, CloudWatch, Alerting & dashboards]
+  - group: OS & scripting
+    items: [RHEL 9, Ubuntu, Bash, Python, PowerShell]
+  - group: Operations
+    items: [Runbooks & RCA, ITIL incident & change, ServiceNow]
+
+certifications:
+  primary:
+    - {name: AWS Certified Solutions Architect – Associate, code: SAA-C03, issuer: aws}
+    - {name: Microsoft Azure Fundamentals, code: AZ-900, issuer: microsoft}
+    - {name: Microsoft 365 Fundamentals, code: MS-900, issuer: microsoft}
+    - {name: ITIL 4 Service Management, code: ITIL 4, issuer: axelos}
+  also:
+    - {name: Microsoft Power BI Data Analyst, code: PL-300}
+
+education:
+  - degree: M.Tech, Cloud Computing
+    detail: Work Integrated Learning Programme
+    school: BITS Pilani
+    dates: 2025 – 2027 (expected)
+  - degree: B.Tech, Electronics & Communication
+    detail: "CGPA 8.44"
+    school: MAIT, Delhi
+    dates: 2019 – 2023
+
+contact:
+  title: Let's talk
+  text: >-
+    I'm looking for Cloud, DevOps, SRE and Platform roles in Delhi NCR and remote.
+    Email is the fastest way to reach me.

@@ -1,0 +1,134 @@
+{#- Architecture diagrams. Colours come from CSS classes, so they follow the light/dark theme. -#}
+
+{%- macro arrow_marker(id) -%}
+<defs>
+  <marker id="{{ id }}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path class="d-head" d="M0 0 10 5 0 10z"/>
+  </marker>
+</defs>
+{%- endmacro -%}
+
+{%- macro db(x, y, w, label, cls="") -%}
+<g class="d-db {{ cls }}">
+  <path d="M{{ x }} {{ y + 8 }} v34 a{{ w / 2 }} 8 0 0 0 {{ w }} 0 v-34"/>
+  <ellipse cx="{{ x + w / 2 }}" cy="{{ y + 8 }}" rx="{{ w / 2 }}" ry="8"/>
+  <text x="{{ x + w / 2 }}" y="{{ y + 34 }}" text-anchor="middle" class="d-t d-small d-mono">{{ label }}</text>
+</g>
+{%- endmacro -%}
+
+{%- macro railbook() -%}
+<svg class="diagram" viewBox="0 0 440 312" role="img" aria-labelledby="rb-title rb-desc">
+  <title id="rb-title">RailBook architecture</title>
+  <desc id="rb-desc">A client calls booking-service. Booking-service holds and releases seats through inventory-service over REST with timeouts, retries and an idempotency key. Each service has its own PostgreSQL database. Inventory-service autoscales from 2 to 5 pods. Everything runs in the railbook Kubernetes namespace.</desc>
+  {{ arrow_marker("rb-arrow") }}
+  <rect class="d-zone" x="8" y="62" width="424" height="242" rx="14"/>
+  <text class="d-t d-small d-mono d-muted" x="418" y="84" text-anchor="end">namespace: railbook</text>
+
+  <rect class="d-pill" x="52" y="8" width="120" height="32" rx="16"/>
+  <text class="d-t" x="112" y="29" text-anchor="middle">Client</text>
+  <path class="d-line" d="M112 40 V102" marker-end="url(#rb-arrow)"/>
+  <text class="d-t d-small d-muted" x="122" y="76">POST /bookings</text>
+
+  <rect class="d-box d-accent" x="26" y="104" width="172" height="62" rx="10"/>
+  <text class="d-t d-mono d-strong" x="112" y="131" text-anchor="middle">booking-service</text>
+  <text class="d-t d-small d-muted" x="112" y="151" text-anchor="middle">saga · PNR</text>
+
+  <rect class="d-box d-accent" x="242" y="104" width="172" height="62" rx="10"/>
+  <text class="d-t d-mono d-strong" x="328" y="131" text-anchor="middle">inventory-service</text>
+  <text class="d-t d-small d-muted" x="328" y="151" text-anchor="middle">seats · holds</text>
+  <rect class="d-tag" x="346" y="155" width="76" height="22" rx="11"/>
+  <text class="d-t d-small d-mono d-tag-t" x="384" y="170" text-anchor="middle">HPA 2→5</text>
+
+  <path class="d-line" d="M198 128 H240" marker-end="url(#rb-arrow)"/>
+  <path class="d-line d-dash" d="M240 146 H200" marker-end="url(#rb-arrow)"/>
+  <text class="d-t d-small d-muted" x="220" y="186" text-anchor="middle">hold / release</text>
+
+  <path class="d-line" d="M112 166 V206"/>
+  <path class="d-line" d="M328 166 V206"/>
+  {{ db(62, 206, 100, "booking_db") }}
+  {{ db(278, 206, 100, "inventory_db") }}
+
+  <text class="d-t d-small d-muted" x="112" y="286" text-anchor="middle">retries + idempotency key</text>
+  <text class="d-t d-small d-muted" x="328" y="286" text-anchor="middle">row lock: no overbooking</text>
+</svg>
+{%- endmacro -%}
+
+{%- macro terraform() -%}
+<svg class="diagram" viewBox="0 0 440 312" role="img" aria-labelledby="tf-title tf-desc">
+  <title id="tf-title">Terraform repository layout</title>
+  <desc id="tf-desc">The dev and prod environments both use the network and compute modules. Each environment stores its state in an S3 bucket and locks it in a DynamoDB table, both created by a bootstrap stack. GitHub Actions runs fmt, validate, tflint and terraform test on every push.</desc>
+  {{ arrow_marker("tf-arrow") }}
+  <text class="d-t d-small d-mono d-muted" x="16" y="22">envs/</text>
+  <rect class="d-box" x="16" y="32" width="108" height="44" rx="10"/>
+  <text class="d-t d-mono d-strong" x="70" y="59" text-anchor="middle">dev</text>
+  <rect class="d-box" x="16" y="92" width="108" height="44" rx="10"/>
+  <text class="d-t d-mono d-strong" x="70" y="119" text-anchor="middle">prod</text>
+
+  <text class="d-t d-small d-mono d-muted" x="168" y="22">modules/</text>
+  <rect class="d-box d-accent" x="168" y="32" width="136" height="44" rx="10"/>
+  <text class="d-t d-mono d-strong" x="236" y="59" text-anchor="middle">network</text>
+  <rect class="d-box d-accent" x="168" y="92" width="136" height="44" rx="10"/>
+  <text class="d-t d-mono d-strong" x="236" y="119" text-anchor="middle">compute</text>
+
+  <path class="d-line" d="M124 54 H166" marker-end="url(#tf-arrow)"/>
+  <path class="d-line" d="M124 114 H166" marker-end="url(#tf-arrow)"/>
+  <path class="d-line" d="M124 62 L166 108" marker-end="url(#tf-arrow)"/>
+  <path class="d-line" d="M124 106 L166 62" marker-end="url(#tf-arrow)"/>
+
+  <rect class="d-zone" x="16" y="172" width="288" height="128" rx="14"/>
+  <text class="d-t d-small d-mono d-muted" x="290" y="194" text-anchor="end">bootstrap/ · remote state</text>
+  <path class="d-line" d="M70 136 V214" marker-end="url(#tf-arrow)"/>
+  {{ db(36, 214, 92, "S3 state") }}
+  {{ db(176, 214, 112, "DynamoDB lock") }}
+  <path class="d-line d-dash" d="M128 238 H174" marker-end="url(#tf-arrow)"/>
+  <text class="d-t d-small d-muted" x="151" y="294" text-anchor="middle">one writer at a time</text>
+
+  <rect class="d-box d-ci" x="318" y="32" width="114" height="268" rx="12"/>
+  <text class="d-t d-small d-mono d-muted" x="375" y="56" text-anchor="middle">GitHub</text>
+  <text class="d-t d-small d-mono d-muted" x="375" y="72" text-anchor="middle">Actions</text>
+  {%- for check in ["fmt", "validate", "tflint", "test"] %}
+  <rect class="d-check" x="328" y="{{ 92 + loop.index0 * 50 }}" width="94" height="34" rx="17"/>
+  <circle class="d-ok" cx="344" cy="{{ 109 + loop.index0 * 50 }}" r="5"/>
+  <text class="d-t d-small d-mono" x="356" y="{{ 114 + loop.index0 * 50 }}">{{ check }}</text>
+  {%- endfor %}
+</svg>
+{%- endmacro -%}
+
+{%- macro easyshop() -%}
+<svg class="diagram" viewBox="0 0 440 312" role="img" aria-labelledby="es-title es-desc">
+  <title id="es-title">GitOps pipeline on AWS EKS</title>
+  <desc id="es-desc">A git push triggers Jenkins, which builds the image, pushes it to Docker Hub and bumps the image tag in the Kubernetes manifests. ArgoCD syncs the manifests into the EKS cluster, where NGINX Ingress with cert-manager TLS fronts the app, which scales from 2 to 5 replicas, and a MongoDB StatefulSet.</desc>
+  {{ arrow_marker("es-arrow") }}
+  <rect class="d-pill" x="8" y="14" width="104" height="36" rx="18"/>
+  <text class="d-t d-mono" x="60" y="37" text-anchor="middle">git push</text>
+  <rect class="d-box d-accent" x="160" y="10" width="120" height="44" rx="10"/>
+  <text class="d-t d-strong" x="220" y="37" text-anchor="middle">Jenkins</text>
+  <rect class="d-box" x="328" y="10" width="104" height="44" rx="10"/>
+  <text class="d-t" x="380" y="37" text-anchor="middle">Docker Hub</text>
+  <path class="d-line" d="M112 32 H158" marker-end="url(#es-arrow)"/>
+  <path class="d-line" d="M280 32 H326" marker-end="url(#es-arrow)"/>
+
+  <path class="d-line" d="M220 54 V90" marker-end="url(#es-arrow)"/>
+  <text class="d-t d-small d-muted" x="228" y="78">bump image tag</text>
+  <rect class="d-box" x="134" y="92" width="172" height="40" rx="10"/>
+  <text class="d-t d-mono d-small" x="220" y="117" text-anchor="middle">k8s manifests (git)</text>
+  <rect class="d-box d-accent" x="328" y="92" width="104" height="40" rx="10"/>
+  <text class="d-t d-strong" x="380" y="117" text-anchor="middle">ArgoCD</text>
+  <path class="d-line d-dash" d="M326 112 H308" marker-end="url(#es-arrow)"/>
+
+  <path class="d-line" d="M380 132 V170" marker-end="url(#es-arrow)"/>
+  <text class="d-t d-small d-muted" x="372" y="160" text-anchor="end">auto-sync</text>
+
+  <rect class="d-zone" x="8" y="172" width="424" height="132" rx="14"/>
+  <text class="d-t d-small d-mono d-muted" x="22" y="194">AWS EKS · namespace easyshop</text>
+  <rect class="d-box" x="22" y="210" width="124" height="74" rx="10"/>
+  <text class="d-t d-strong d-small" x="84" y="240" text-anchor="middle">NGINX Ingress</text>
+  <text class="d-t d-small d-muted" x="84" y="260" text-anchor="middle">cert-manager TLS</text>
+  <rect class="d-box d-accent" x="160" y="210" width="124" height="74" rx="10"/>
+  <text class="d-t d-strong d-small" x="222" y="240" text-anchor="middle">app</text>
+  <text class="d-t d-small d-muted" x="222" y="260" text-anchor="middle">HPA 2→5</text>
+  <path class="d-line" d="M146 247 H158" marker-end="url(#es-arrow)"/>
+  <path class="d-line" d="M284 247 H302" marker-end="url(#es-arrow)"/>
+  {{ db(304, 216, 112, "MongoDB") }}
+</svg>
+{%- endmacro -%}

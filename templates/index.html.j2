@@ -1,0 +1,297 @@
+{%- from "icons.html.j2" import icon -%}
+{%- import "diagrams.html.j2" as diagrams -%}
+{%- set p = person -%}
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ site.title }}</title>
+  <meta name="description" content="{{ site.description | trim }}">
+  <meta name="author" content="{{ p.name }}">
+  <link rel="canonical" href="{{ site.url }}/">
+  <meta name="theme-color" content="#0b0f15" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+
+  <meta property="og:type" content="profile">
+  <meta property="og:site_name" content="{{ p.name }}">
+  <meta property="og:title" content="{{ site.title }}">
+  <meta property="og:description" content="{{ site.description | trim }}">
+  <meta property="og:url" content="{{ site.url }}/">
+  <meta property="og:image" content="{{ site.url }}/static/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{ p.name }}, {{ p.role }}">
+  <meta property="profile:first_name" content="{{ p.name.split()[0] }}">
+  <meta property="profile:last_name" content="{{ p.name.split()[-1] }}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="static/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="static/img/anubhav-avatar.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="static/css/site.css?v={{ build.version }}">
+  <script>
+    /* Set the theme before first paint so there is no flash of the wrong colours. */
+    (function () {
+      var root = document.documentElement;
+      root.classList.add("js");
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+      } catch (e) {}
+    })();
+  </script>
+  <script type="application/ld+json">{{ jsonld | tojson }}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <a class="brand" href="#top" aria-label="{{ p.name }}, back to top">
+        <span class="brand-mark" aria-hidden="true">AA</span>
+        <span class="brand-name">{{ p.name }}</span>
+      </a>
+      <nav class="nav" aria-label="Sections">
+        <a href="#prs">PRS</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">
+        {{ icon("sun") }}{{ icon("moon") }}
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    {# ── HERO ─────────────────────────────────────────── #}
+    <section class="hero" id="top">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="dot" aria-hidden="true"></span>{{ hero.eyebrow }}</p>
+          <h1>
+            <span class="hero-name">{{ p.name }}</span>
+            <span class="hero-headline">{{ hero.headline }}</span>
+          </h1>
+          <p class="lead">{{ hero.lead | trim }}</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#projects">See my work {{ icon("down", 16) }}</a>
+            <a class="btn" href="mailto:{{ p.email }}">{{ icon("mail", 16) }} Email</a>
+            <a class="btn btn-icon" href="{{ p.linkedin }}" rel="me noopener" target="_blank" aria-label="LinkedIn (opens in a new tab)">{{ icon("linkedin", 18) }}</a>
+            <a class="btn btn-icon" href="{{ p.github }}" rel="me noopener" target="_blank" aria-label="GitHub (opens in a new tab)">{{ icon("github", 18) }}</a>
+          </div>
+          <ul class="hero-facts" aria-label="At a glance">
+            <li><strong>2.5 yrs</strong><span>production infrastructure</span></li>
+            <li><strong>BITS Pilani</strong><span>M.Tech, Cloud Computing</span></li>
+            <li><strong>AWS SAA</strong><span>certified architect</span></li>
+          </ul>
+          <p class="open-to">{{ icon("pin", 15) }} {{ hero.open_to }}</p>
+        </div>
+
+        <div class="hero-visual">
+          <figure class="portrait">
+            <picture>
+              <source srcset="static/img/anubhav-portrait.webp" type="image/webp">
+              <img src="static/img/anubhav-portrait.jpg" width="520" height="650" alt="{{ p.photo_alt }}" fetchpriority="high">
+            </picture>
+          </figure>
+          <div class="terminal" aria-label="Terminal summary">
+            <div class="terminal-bar" aria-hidden="true"><i></i><i></i><i></i><span>~/anubhav</span></div>
+            <div class="terminal-body">
+              {%- for step in hero.terminal %}
+              <p><span class="prompt" aria-hidden="true">$</span> {{ step.cmd }}</p>
+              {%- for line in step.get('out', []) %}
+              <p class="out">{{ line }}</p>
+              {%- endfor %}
+              {%- if step.get('table') %}
+              <table>
+                <thead><tr>{% for h in step.table.header %}<th scope="col">{{ h }}</th>{% endfor %}</tr></thead>
+                <tbody>
+                {%- for row in step.table.rows %}
+                  <tr><td>{{ row[0] }}</td><td class="ready">{{ row[1] }}</td></tr>
+                {%- endfor %}
+                </tbody>
+              </table>
+              {%- endif %}
+              {%- endfor %}
+              <p><span class="prompt" aria-hidden="true">$</span> <span class="cursor" aria-hidden="true"></span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {# ── PRS / SCALE ──────────────────────────────────── #}
+    <section class="band" id="prs" aria-labelledby="prs-title">
+      <div class="wrap">
+        <p class="kicker">{{ scale.kicker }}</p>
+        <h2 id="prs-title">{{ scale.title }}</h2>
+        <p class="section-intro">{{ scale.intro | trim }}</p>
+
+        <ul class="stats">
+          {%- for s in scale.stats %}
+          <li class="stat reveal">
+            <span class="stat-value">{{ s.value }}</span>
+            <span class="stat-label">{{ s.label }}</span>
+            <span class="stat-note">{{ s.note }}{% if s.get('source') %} <a href="{{ s.source.url }}" rel="noopener" target="_blank">{{ s.source.label }}</a>{% endif %}</span>
+          </li>
+          {%- endfor %}
+        </ul>
+        <p class="aside"><strong>Tatkal?</strong> {{ scale.tatkal | trim }}</p>
+
+        <h3 class="sub">{{ scale.work_title }}</h3>
+        <ul class="work-grid">
+          {%- for w in scale.work %}
+          <li class="work reveal"><h4>{{ w.title }}</h4><p>{{ w.text | trim }}</p></li>
+          {%- endfor %}
+        </ul>
+      </div>
+    </section>
+
+    {# ── EXPERIENCE ───────────────────────────────────── #}
+    <section class="section" id="experience" aria-labelledby="exp-title">
+      <div class="wrap">
+        <p class="kicker">Experience</p>
+        <h2 id="exp-title">Where I've worked</h2>
+        <ol class="timeline">
+          {%- for job in experience %}
+          <li class="job reveal">
+            <div class="job-head">
+              <div>
+                <h3>{{ job.role }}</h3>
+                <p class="job-org"><strong>{{ job.org }}</strong> · {{ job.client }}</p>
+              </div>
+              <p class="job-meta"><span>{{ job.dates }}</span><span>{{ job.place }}</span></p>
+            </div>
+            <p class="job-summary">{{ job.summary | trim }}{% if job.get('see_also') %} <a href="{{ job.see_also }}">What I do there ↑</a>{% endif %}</p>
+            {%- if job.points %}
+            <ul class="job-points">
+              {%- for pt in job.points %}<li>{{ pt | trim }}</li>{%- endfor %}
+            </ul>
+            {%- endif %}
+            <ul class="chips" aria-label="Stack">{% for t in job.stack %}<li>{{ t }}</li>{% endfor %}</ul>
+          </li>
+          {%- endfor %}
+        </ol>
+      </div>
+    </section>
+
+    {# ── PROJECTS ─────────────────────────────────────── #}
+    <section class="section section-alt" id="projects" aria-labelledby="proj-title">
+      <div class="wrap">
+        <p class="kicker">Projects</p>
+        <h2 id="proj-title">Things I've built</h2>
+        <p class="section-intro">Each one is public on GitHub, with the code, manifests and a README that explains the design.</p>
+
+        {%- for pr in projects %}
+        <article class="project reveal" id="{{ pr.id }}" aria-labelledby="{{ pr.id }}-title">
+          <header class="project-head">
+            <p class="project-num" aria-hidden="true">{{ "%02d" | format(loop.index) }}</p>
+            <div>
+              <h3 id="{{ pr.id }}-title">{{ pr.name }}</h3>
+              <p class="project-tagline">{{ pr.tagline }}</p>
+              <p class="project-context">{{ pr.context | trim }}</p>
+            </div>
+          </header>
+          <div class="project-body">
+            <div class="project-text">
+              <h4>The problem</h4>
+              <p>{{ pr.problem | trim }}</p>
+              <h4>What I built</h4>
+              <ul class="ticks">
+                {%- for b in pr.built %}<li>{{ b | trim }}</li>{%- endfor %}
+              </ul>
+            </div>
+            <div class="project-side">
+              <figure class="diagram-card" tabindex="0" aria-label="{{ pr.name }} diagram">
+                {{ diagrams[pr.diagram]() }}
+              </figure>
+              <ul class="chips" aria-label="Stack">{% for t in pr.stack %}<li>{{ t }}</li>{% endfor %}</ul>
+              <ul class="repo-links">
+                {%- for l in pr.links %}
+                <li><a href="{{ l.url }}" rel="noopener" target="_blank">{{ icon("github", 16) }}<span>{{ l.label }}</span>{{ icon("arrow", 14) }}</a></li>
+                {%- endfor %}
+              </ul>
+            </div>
+          </div>
+        </article>
+        {%- endfor %}
+      </div>
+    </section>
+
+    {# ── SKILLS ───────────────────────────────────────── #}
+    <section class="section" id="skills" aria-labelledby="skills-title">
+      <div class="wrap">
+        <p class="kicker">Skills</p>
+        <h2 id="skills-title">What I work with</h2>
+        <div class="skills-grid">
+          {%- for g in skills %}
+          <div class="skill-group reveal">
+            <h3>{{ g.group }}</h3>
+            <ul class="chips">{% for s in g['items'] %}<li>{{ s }}</li>{% endfor %}</ul>
+          </div>
+          {%- endfor %}
+        </div>
+
+        <div class="creds">
+          <div class="creds-col reveal">
+            <h3 class="sub">{{ icon("badge", 18) }} Certifications</h3>
+            <ul class="cert-list">
+              {%- for c in certifications.primary %}
+              <li class="cert cert-{{ c.issuer }}"><span class="cert-code">{{ c.code }}</span><span class="cert-name">{{ c.name }}</span></li>
+              {%- endfor %}
+            </ul>
+            {%- if certifications.also %}
+            <p class="cert-also">Also: {% for c in certifications.also %}{{ c.name }} <span class="nowrap">({{ c.code }})</span>{% if not loop.last %}, {% endif %}{% endfor %}</p>
+            {%- endif %}
+          </div>
+          <div class="creds-col reveal">
+            <h3 class="sub">{{ icon("cap", 18) }} Education</h3>
+            <ul class="edu-list">
+              {%- for e in education %}
+              <li class="edu">
+                <p class="edu-school">{{ e.school }}</p>
+                <p class="edu-degree">{{ e.degree }}</p>
+                <p class="edu-meta">{{ e.detail }} · {{ e.dates }}</p>
+              </li>
+              {%- endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {# ── CONTACT ──────────────────────────────────────── #}
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <div class="contact-card reveal">
+          <img class="contact-avatar" src="static/img/anubhav-avatar.jpg" width="96" height="96" alt="">
+          <div class="contact-copy">
+            <h2 id="contact-title">{{ contact.title }}</h2>
+            <p>{{ contact.text | trim }}</p>
+            <div class="cta-row">
+              <a class="btn btn-primary" href="mailto:{{ p.email }}">{{ icon("mail", 16) }} {{ p.email }}</a>
+              <a class="btn" href="{{ p.linkedin }}" rel="me noopener" target="_blank">{{ icon("linkedin", 16) }} LinkedIn</a>
+              <a class="btn" href="{{ p.github }}" rel="me noopener" target="_blank">{{ icon("github", 16) }} GitHub</a>
+            </div>
+            <p class="open-to">{{ icon("pin", 15) }} {{ p.location }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-in">
+      <p>© {{ build.year }} {{ p.name }}</p>
+      <p class="build">Built from YAML by a small Python script, tested and deployed to GitHub Pages by GitHub Actions{% if build.commit %} · <a href="{{ site.repo }}/commit/{{ build.commit }}">{{ build.commit[:7] }}</a>{% endif %}</p>
+    </div>
+  </footer>
+
+  <script src="static/js/site.js?v={{ build.version }}" defer></script>
+</body>
+</html>

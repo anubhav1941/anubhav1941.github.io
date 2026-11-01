@@ -1,24 +1,35 @@
-# anubhav1941.github.io
+<div align="center">
 
-Personal site of **Anubhav Arora**, Cloud, DevOps & Platform Engineer. Live at <https://anubhav1941.github.io>.
+# Anubhav Arora
 
-A single static page rendered from one YAML file. No framework and no client-side build: plain HTML, CSS and a few lines of JavaScript, so it loads fast and works without JavaScript.
+**Cloud, DevOps & Platform Engineer** · Platform Engineer at CRIS (Indian Railways) · M.Tech Cloud Computing, BITS Pilani
 
-## How it works
+### [anubhav1941.github.io](https://anubhav1941.github.io)
+
+[LinkedIn](https://www.linkedin.com/in/anubhavarora-devops/) · [GitHub](https://github.com/anubhav1941) · [Email](mailto:anubhav1941@gmail.com)
+
+[![site](https://github.com/anubhav1941/anubhav1941.github.io/actions/workflows/pages.yml/badge.svg)](https://github.com/anubhav1941/anubhav1941.github.io/actions/workflows/pages.yml)
+
+<a href="https://anubhav1941.github.io"><img src="docs/screenshot.png" alt="Screenshot of the portfolio site" width="820"></a>
+
+</div>
+
+This is the source of my portfolio site. The site is the thing to look at; this repo is how it's built.
+
+## How it's built
+
+- **One YAML file** (`content/profile.yaml`) holds all the text. A short Python script (`build.py`) renders it through Jinja2 templates into plain HTML. There's no framework and no client-side build step.
+- **Light and dark themes**, mobile-first, and checked with an accessibility scanner (axe) in both themes.
+- **Architecture diagrams** are hand-written inline SVG, so they follow the theme and stay sharp at any size.
+- **Tests** check the built site: every link and asset resolves, images have alt text, share-preview tags exist, **no phone number is published**, and **the photos carry no EXIF/GPS metadata**.
+- **GitHub Actions** runs the tests, builds the site and deploys it to GitHub Pages on every push to `main`. Pull requests run the tests and the build without deploying.
 
 ```
 content/profile.yaml ──▶ build.py (Jinja2) ──▶ _site/ ──▶ GitHub Pages
-                              ▲
-templates/*.j2 ───────────────┘   static/ (CSS, JS, images) copied as is
+templates/*.j2 ────────────┘     static/ (CSS, JS, images) copied as is
 ```
 
-Every push to `main` runs [`.github/workflows/pages.yml`](.github/workflows/pages.yml): install, `pytest`, build, deploy. Pull requests run the tests and the build without deploying.
-
-## Edit the content
-
-Change `content/profile.yaml` (experience, projects, skills, certifications) and push. Diagrams are inline SVG in `templates/diagrams.html.j2` and follow the light/dark theme.
-
-## Run locally
+## Run it locally
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
@@ -28,18 +39,12 @@ python build.py              # writes _site/
 python -m http.server -d _site 8000
 ```
 
-## What the tests check
+To change the content, edit `content/profile.yaml`. The share-preview image (`static/img/og.png`) is a 1200×630 screenshot of `tools/og.html`.
 
-- Every in-page link has a target, ids are unique, there is one `<h1>`.
-- Every referenced CSS, JS and image file exists; images have alt text and dimensions.
-- Link-preview (Open Graph) and SEO tags are present, and the preview image exists.
-- New-tab links use `rel="noopener"`.
-- **Privacy:** no phone number anywhere in the output, and the photos carry no EXIF, XMP or Photoshop metadata.
+## Projects featured on the site
 
-## Link-preview image
-
-`static/img/og.png` is a screenshot of `tools/og.html` at 1200×630. Open that file in a browser at that size and capture it to regenerate.
-
-## One-time setup
-
-Repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+| Project | What it shows |
+|---|---|
+| [railbook-deploy](https://github.com/anubhav1941/railbook-deploy) (+ [inventory-service](https://github.com/anubhav1941/inventory-service), [booking-service](https://github.com/anubhav1941/booking-service)) | Microservices on Kubernetes: booking saga, seat locking, HPA, CI |
+| [terraform-aws-infra](https://github.com/anubhav1941/terraform-aws-infra) | Terraform modules, dev/prod, locked remote state, CI |
+| [devops-3tier-ecommerce-pipeline](https://github.com/anubhav1941/devops-3tier-ecommerce-pipeline) | GitOps on AWS EKS: Jenkins, ArgoCD, cert-manager |

@@ -124,12 +124,53 @@ def test_new_tab_links_are_noopener(page):
         assert "noopener" in a.get("rel", ""), a
 
 
+# An Indian mobile number: optional +91, then 10 digits starting 6-9, not part of a longer
+# run of digits or letters.
+PHONE = re.compile(r"(?<![\w.])(?:\+?91[\s-]?)?[6-9]\d{4}[\s-]?\d{5}(?!\w)")
+
+
+def without_build_hashes(text: str) -> str:
+    """Drop the two places the build writes hex digests (cache-busting ?v= and the commit link).
+
+    A 40-character commit hash can contain 10 digits in a row, so scanning it would fail about
+    one build in ten. Scrubbing only these two patterns keeps every other 10-digit run visible."""
+    text = re.sub(r"\?v=[0-9a-f]+", "", text)
+    return re.sub(r"/commit/[0-9a-f]+", "/commit/", text)
+
+
 def test_no_phone_number_is_published(site):
     """The resume has a phone number; the public site must not."""
-    phone = re.compile(r"(?:\+?91[\s-]?)?(?<!\d)[6-9]\d{4}[\s-]?\d{5}(?!\d)")
     for f in site.rglob("*"):
         if f.suffix in {".html", ".txt", ".xml", ".js", ".css", ".json"}:
-            assert not phone.search(f.read_text(encoding="utf-8")), f
+            text = without_build_hashes(f.read_text(encoding="utf-8"))
+            assert not PHONE.search(text), f
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "+91-98" + "76543210",  # synthetic numbers
+        "98765 43210",
+        "call 9876543210 now",
+        "tel:+91" + "9876543210",
+        'href="tel:9876543210"',
+    ],
+)
+def test_phone_guard_catches_real_numbers(text):
+    assert PHONE.search(without_build_hashes(text))
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        # a commit hash with 10 digits in a row, as in the footer link
+        'href="https://github.com/x/y/commit/6a7257340295b1c3d4e5f60718293a4b5c6d7e8f"',
+        'src="static/js/site.js?v=7257340295"',  # a digits-only cache-busting hash
+        "2019 – 2023 · CGPA 8.44 · SAA-C03 · 2025MT03101",
+    ],
+)
+def test_phone_guard_ignores_hashes_and_ordinary_numbers(text):
+    assert not PHONE.search(without_build_hashes(text))
 
 
 @pytest.mark.parametrize("name", ["anubhav-portrait.jpg", "anubhav-portrait.webp", "anubhav-avatar.jpg"])

@@ -21,7 +21,7 @@ This is the source of my portfolio site. The site is the thing to look at; this 
 - **One YAML file** (`content/profile.yaml`) holds all the text. A short Python script (`build.py`) renders it through Jinja2 templates into plain HTML. There's no framework and no client-side build step.
 - **Light and dark themes**, mobile-first, and checked with an accessibility scanner (axe) in both themes.
 - **Architecture diagrams** are hand-written inline SVG, so they follow the theme and stay sharp at any size.
-- **13 tests** check the built site: every link and asset resolves, images have alt text, share-preview tags exist, **no phone number is published**, and **the photos carry no EXIF/GPS metadata**.
+- **Tests** check the built site: every link and asset resolves, images have alt text, share-preview tags exist, **no phone number is published**, and **the photos carry no EXIF/GPS metadata**.
 - **GitHub Actions** runs the tests, builds the site and deploys it to GitHub Pages on every push to `main`. Pull requests run the tests and the build without deploying.
 
 ```
